@@ -1,0 +1,18 @@
+# Ignore IDE/hidden/OS cache files
+.*
+*~
+
+# Keep some hiddens
+!.htaccess
+!/.gitignore
+!/.travis.yml
+
+# Environment configuration
+!.env.dist
+
+# Composer
+vendor/*
+!vendor/.gitkeep
+
+# tmp
+/src/Params/Params.php_obj
