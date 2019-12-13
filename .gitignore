@@ -13,6 +13,3 @@
 # Composer
 vendor/*
 !vendor/.gitkeep
-
-# tmp
-/src/Params/Params.php_obj

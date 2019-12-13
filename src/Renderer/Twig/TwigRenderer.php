@@ -71,11 +71,12 @@ class TwigRenderer implements RendererInterface
     {
         return $this->environment;
     }
-
+    
     /**
      * Creates the environment
      *
-     * @param  array $options
+     * @param LoaderInterface $loader
+     * @param array           $options
      *
      * @return Environment
      */
