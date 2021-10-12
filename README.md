@@ -18,6 +18,8 @@ $twigEnvironment = new Environment(new ArrayLoader([
 ]));
 $renderer = new TwigRenderer($twigEnvironment, 'myExtension');
 
+// using unified way of rendering templates
+// (without knowledge of namespaces resolution and file extensions)
 echo $renderer->render('@namespace/template', ['name' => 'John']);
 ````
 
