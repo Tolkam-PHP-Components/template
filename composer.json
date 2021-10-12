@@ -1,6 +1,6 @@
 {
     "name": "tolkam/template",
-    "description": "Templating component with multiple renderers (engines) and PSR-7 support",
+    "description": "Templating component with multiple renderers (engines) support",
     "type": "library",
     "license": "proprietary",
     "autoload": {
@@ -12,11 +12,6 @@
         "php": ">=7.4",
         "psr/http-message": "~1.0",
         "twig/twig": "^3.0",
-        "tolkam/utils": "^1.0@dev"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
+        "tolkam/utils": "^1.0"
     }
 }
