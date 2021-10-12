@@ -13,45 +13,53 @@ class TwigRenderer implements RendererInterface
     /**
      * @var Environment
      */
-    protected $environment;
-
+    protected Environment $environment;
+    
     /**
-     * @var LoaderInterface
+     * @var LoaderInterface|null
      */
-    protected $loader;
-
+    protected ?LoaderInterface $loader = null;
+    
     /**
      * @var string
      */
-    protected $ext = 'twig';
-
+    protected string $ext = 'twig';
+    
     /**
      * @param Environment|null $environment
      * @param string|null      $ext
-     * @param array            $options     Environment options
+     * @param array            $options Environment options
      */
-    public function __construct(Environment $environment = null, string $ext = null, array $options = [])
-    {
+    public function __construct(
+        Environment $environment = null,
+        string $ext = null,
+        array $options = []
+    ) {
         if ($environment !== null) {
+            $this->loader = $environment->getLoader();
             $this->environment = $environment;
-        } else {
+        }
+        else {
             $this->loader = $this->createDefaultLoader();
             $this->environment = $this->createEnvironment($this->loader, $options);
         }
-
+        
         if ($ext !== null) {
             $this->ext = $ext;
         }
     }
-
+    
     /**
      * @inheritDoc
      */
     public function render(string $name, array $params = []): string
     {
-        return $this->environment->render($this->normalizeName($name), $this->normalizeParams($params));
+        return $this->environment->render(
+            $this->normalizeName($name),
+            $this->normalizeParams($params)
+        );
     }
-
+    
     /**
      * @inheritDoc
      */
@@ -61,13 +69,13 @@ class TwigRenderer implements RendererInterface
             $this->loader->addPath($path, $namespace ?: FilesystemLoader::MAIN_NAMESPACE);
         }
     }
-
+    
     /**
      * Gets the environment
      *
      * @return Environment
      */
-    public function getEnvironment()
+    public function getEnvironment(): Environment
     {
         return $this->environment;
     }
@@ -84,7 +92,7 @@ class TwigRenderer implements RendererInterface
     {
         return new Environment($loader, $options);
     }
-
+    
     /**
      * Creates the default loader
      *
@@ -92,7 +100,7 @@ class TwigRenderer implements RendererInterface
      */
     protected function createDefaultLoader(): LoaderInterface
     {
-        return new FilesystemLoader();
+        return new FilesystemLoader;
     }
     
     /**
@@ -103,21 +111,22 @@ class TwigRenderer implements RendererInterface
      *
      * @return string
      */
-    protected function normalizeName(string $name) : string
+    protected function normalizeName(string $name): string
     {
         $name = preg_replace('#^([^:]+)::(.*)$#', '@$1/$2', $name);
-
-        if (! preg_match('#\.[a-z]+$#i', $name)) {
+        
+        if (!preg_match('#\.[a-z]+$#i', $name)) {
             return sprintf('%s.%s', $name, $this->ext);
         }
-
+        
         return $name;
     }
-
+    
     /**
      * Normalizes params into array
      *
-     * @param  mixed $params
+     * @param mixed $params
+     *
      * @return array
      */
     protected function normalizeParams($params): array
@@ -125,21 +134,21 @@ class TwigRenderer implements RendererInterface
         if (null === $params) {
             return [];
         }
-    
+        
         if (is_array($params)) {
             return $params;
         }
-    
+        
         if (is_object($params)) {
             return (array) $params;
         }
-    
+        
         if ($params instanceof Traversable) {
             return iterator_to_array($params);
         }
-    
+        
         throw new Exception(sprintf(
-            'Template parameters must be array, object or instance of %s, %s given',
+            'Template parameters must be an array, object or instance of %s, %s given',
             Traversable::class,
             gettype($params)
         ));
