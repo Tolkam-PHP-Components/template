@@ -19,13 +19,13 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     /**
      * Array path separator
      */
-    const PATH_SEPARATOR = '.';
-    
+    public const PATH_SEPARATOR = '.';
+
     /**
      * @var array
      */
     private array $items = [];
-    
+
     /**
      * @var array
      */
@@ -33,12 +33,12 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
         // whether to use closure return value as offset value
         'resolveClosures' => true,
     ];
-    
+
     /**
      * @var ParamsExtensionInterface[]
      */
     private array $extensions = [];
-    
+
     /**
      * @param array $input
      * @param array $options
@@ -50,7 +50,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
             $this->items[$k] = $this->convertValue($v);
         }
     }
-    
+
     /**
      * @param string $key
      * @param        $value
@@ -60,10 +60,10 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     public function set(string $key, $value): self
     {
         Arr::set($this->items, $key, $this->convertValue($value), self::PATH_SEPARATOR);
-        
+
         return $this;
     }
-    
+
     /**
      * @param string $key
      * @param null   $default
@@ -74,7 +74,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     {
         return Arr::get($this->items, $key, $default, self::PATH_SEPARATOR);
     }
-    
+
     /**
      * @param mixed ...$values
      *
@@ -83,10 +83,10 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     public function push(...$values): self
     {
         array_push($this->items, ...$values);
-        
+
         return $this;
     }
-    
+
     /**
      * @param mixed ...$values
      *
@@ -95,10 +95,10 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     public function unshift(...$values): self
     {
         array_unshift($this->items, ...$values);
-        
+
         return $this;
     }
-    
+
     /**
      * Registers extension
      *
@@ -109,10 +109,10 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     public function addExtension(ParamsExtensionInterface $extension): self
     {
         $this->extensions[] = $extension;
-        
+
         return $this;
     }
-    
+
     /**
      * Returns a copy of self with extensions applied
      *
@@ -121,21 +121,21 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     public function withExtensions(): self
     {
         $extended = clone $this;
-        
+
         foreach ($this->extensions as $extension) {
             $path = $extension->getPath();
-            
+
             $currentValue = $extended->get($path);
             $newValue = $extension->extend($currentValue);
-            
+
             if ($newValue !== $currentValue) {
                 $extended->set($path, $newValue);
             }
         }
-        
+
         return $extended;
     }
-    
+
     /**
      * Gets params as array
      *
@@ -144,14 +144,14 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     public function toArray(): array
     {
         $arr = [];
-        
+
         foreach ($this->items as $k => $v) {
             $arr[$k] = $v instanceof static ? $v->toArray() : $v;
         }
-        
+
         return $arr;
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -159,7 +159,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     {
         return new ArrayIterator($this->items);
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -167,7 +167,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     {
         $this->items[$offset] = $this->convertValue($value);
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -175,7 +175,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     {
         return $this->resolveValue($this->items[$offset] ?? null);
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -183,7 +183,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     {
         return isset($this->items[$offset]);
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -191,7 +191,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     {
         unset($this->items[$offset]);
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -199,7 +199,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     {
         return count($this->items);
     }
-    
+
     /**
      * Converts value to self instance
      *
@@ -212,10 +212,10 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
         if (is_array($value)) {
             $value = new static($value, $this->options);
         }
-        
+
         return $value;
     }
-    
+
     /**
      * Resolves value
      *
@@ -228,7 +228,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
         if (!!$this->options['resolveClosures'] && $value instanceof Closure) {
             return $value();
         }
-        
+
         return $value;
     }
 }

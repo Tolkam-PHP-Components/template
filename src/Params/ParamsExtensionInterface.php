@@ -10,7 +10,7 @@ interface ParamsExtensionInterface
      * @return string
      */
     public function getPath(): string;
-    
+
     /**
      * Returns new value
      *

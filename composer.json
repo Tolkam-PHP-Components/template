@@ -1,6 +1,6 @@
 {
     "name": "tolkam/template",
-    "description": "Templating component with multiple renderers (engines) support",
+    "description": "Templating base with multiple renderers (engines) support",
     "type": "library",
     "license": "proprietary",
     "authors": [
@@ -17,8 +17,6 @@
     },
     "require": {
         "php": ">=7.4",
-        "psr/http-message": "~1.0",
-        "twig/twig": "^3.0",
         "tolkam/utils": "^1.0"
     }
 }
