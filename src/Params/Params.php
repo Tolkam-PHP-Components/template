@@ -8,6 +8,7 @@ use Closure;
 use Countable;
 use IteratorAggregate;
 use Tolkam\Utils\Arr;
+use Traversable;
 
 /**
  * Extendable params object with array access and more
@@ -70,7 +71,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
      *
      * @return array|ArrayAccess|mixed
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, $default = null): mixed
     {
         return Arr::get($this->items, $key, $default, self::PATH_SEPARATOR);
     }
@@ -155,7 +156,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     /**
      * @inheritDoc
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->items);
     }
@@ -163,7 +164,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     /**
      * @inheritDoc
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->items[$offset] = $this->convertValue($value);
     }
@@ -171,7 +172,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     /**
      * @inheritDoc
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->resolveValue($this->items[$offset] ?? null);
     }
@@ -187,7 +188,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
     /**
      * @inheritDoc
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->items[$offset]);
     }
@@ -207,7 +208,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
      *
      * @return mixed
      */
-    private function convertValue($value)
+    private function convertValue($value): mixed
     {
         if (is_array($value)) {
             $value = new static($value, $this->options);
@@ -223,7 +224,7 @@ class Params implements IteratorAggregate, ArrayAccess, Countable
      *
      * @return mixed
      */
-    private function resolveValue($value)
+    private function resolveValue($value): mixed
     {
         if (!!$this->options['resolveClosures'] && $value instanceof Closure) {
             return $value();
